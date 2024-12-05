@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String        @unique @default(cuid())
+  name             String
+  mobile           String
+  password         String?
+  email            String?
+  loginId          String?
+  city             String?
+  otp              String?
+  countryCode      String        @default("91")
+  role             Role          @default(GUEST)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  hostels          Hostel[]
+  bed              Bed?
+  transactionsFrom Transaction[] @relation("TransactionsFromUser")
+  transactionsTo   Transaction[] @relation("TransactionsToUser")
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+  GUEST
+  EMPLOYEE
+}
+
+model Hostel {
+  id          String        @unique @default(cuid())
+  name        String
+  lat         Float?
+  lng         Float?
+  address     String?
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  rooms       Room[]
+  Transaction Transaction[]
+}
+
+model Room {
+  id        String   @unique @default(cuid())
+  name      String
+  hostelId  String
+  hostel    Hostel   @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+  beds      Bed[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bed {
+  id           String        @unique @default(cuid())
+  name         String
+  rent         Int
+  roomId       String
+  room         Room          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  studentId    String?       @unique
+  student      User?         @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id              String          @unique @default(cuid())
+  amount          Int
+  transactionDate DateTime        @default(now())
+  type            TransactionType
+  description     String?
+  fromUserId      String?
+  fromUser        User?           @relation("TransactionsFromUser", fields: [fromUserId], references: [id])
+  toUserId        String?
+  toUser          User?           @relation("TransactionsToUser", fields: [toUserId], references: [id])
+  hostelId        String?
+  hostel          Hostel?         @relation(fields: [hostelId], references: [id])
+  bedId           String?
+  bed             Bed?            @relation(fields: [bedId], references: [id])
+  receiptUrl      String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  category        Category?       @relation(fields: [categoryId], references: [id])
+  categoryId      String?
+}
+
+enum TransactionType {
+  SALARY
+  EXPENSE
+  RENT
+  GUEST_PAYMENT
+  OTHER
+}
+
+model Category {
+  id           String        @unique @default(cuid())
+  name         String        @unique
+  description  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+}
