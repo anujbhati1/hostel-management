@@ -1,11 +1,9 @@
 import { Router } from "express";
-import { login, Signup } from "../controllers/auth";
+import { login, Signup } from "../controllers/auth.controller";
 
 const authRoutes = Router();
 
-//@ts-ignore
-authRoutes.post("/auth/login", login);
-//@ts-ignore
-authRoutes.post("/auth/signup", Signup);
+authRoutes.post("/login", login);
+authRoutes.post("/signup", Signup);
 
 export default authRoutes;
