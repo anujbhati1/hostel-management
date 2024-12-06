@@ -4,11 +4,14 @@ import cors from "cors";
 import { getIndex } from "./controllers";
 import authRoutes from "./routes/authRoutes";
 import { PrismaClient } from "@prisma/client";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocs from "./swaggerConfig";
 
 const PORT = Number(process.env.PORT) || 4000;
 const app = express();
 
 //Middlewares
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.json());
 app.use(cors());
 

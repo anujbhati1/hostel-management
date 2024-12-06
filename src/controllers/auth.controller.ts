@@ -26,7 +26,16 @@ export const login = async (req: Request, res: Response) => {
 
     const isPassCorrect = checkPassword(password, user.password);
     if (isPassCorrect) {
-      res.status(200).json({ msg: "Login successful" });
+      const token = generateToken({
+        id: user.id,
+        name: user.name,
+        mobile: user.mobile,
+        role: user.role,
+      });
+      const { password, otp, ...rest } = user;
+      res
+        .status(200)
+        .json({ error: false, msg: "Login successful", data: rest, token });
       return;
     }
 
@@ -67,7 +76,10 @@ export const Signup = async (req: Request, res: Response) => {
       mobile: user.mobile,
       role: user.role,
     });
-    res.status(200).json({ msg: "Sigup successful", data: user, token });
+    const { password: passHash, otp, ...rest } = user;
+    res
+      .status(200)
+      .json({ error: false, msg: "Sigup successful", data: rest, token });
   } catch (error) {
     res.status(500).json({ error: true, msg: "Something went wrong!" });
   }
