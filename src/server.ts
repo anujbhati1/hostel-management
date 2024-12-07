@@ -7,6 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./swaggerConfig";
 import hostelRoutes from "./routes/hostelRoutes";
+import roomRoutes from "./routes/roomRoutes";
 
 const PORT = Number(process.env.PORT) || 4000;
 const app = express();
@@ -20,6 +21,7 @@ app.use(cors());
 app.use("/health-check", getIndex);
 app.use("/api/auth", authRoutes);
 app.use("/api/hostels", hostelRoutes);
+app.use("/api/rooms", roomRoutes);
 
 //DB Connection
 export const prisma = new PrismaClient();
