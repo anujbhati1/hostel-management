@@ -138,6 +138,10 @@
  *                 type: string
  *                 example: "bed123"
  *                 description: The ID of the bed to which the student will be assigned.
+ *               password:
+ *                 type: string
+ *                 example: "password"
+ *                 description: This is the password of the studnet login.
  *               studentId:
  *                 type: string
  *                 example: "fde8y8fwf8er8f7f"

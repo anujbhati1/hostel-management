@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../server";
+import { hashPassword } from "../lib/hashPassword";
 
 export const getStudentDetails = async (req: Request, res: Response) => {
   try {
@@ -35,7 +36,7 @@ export const getStudentDetails = async (req: Request, res: Response) => {
 
 export const assignNewStudent = async (req: Request, res: Response) => {
   try {
-    const { name, mobile, bedId, studentId } = req.body;
+    const { name, mobile, bedId, studentId, password } = req.body;
 
     const bedData = await prisma.bed.findFirst({ where: { id: bedId } });
 
@@ -52,11 +53,13 @@ export const assignNewStudent = async (req: Request, res: Response) => {
     });
 
     if (!studentData) {
+      const hashedPassword = hashPassword(password);
       studentData = await prisma.user.create({
         data: {
           mobile,
           name,
           role: "STUDENT",
+          password: hashedPassword,
         },
       });
     }
