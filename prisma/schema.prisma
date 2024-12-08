@@ -16,10 +16,10 @@ datasource db {
 model User {
   id               String        @unique @default(cuid())
   name             String
-  mobile           String
+  mobile           String        @unique
   password         String?
   email            String?
-  loginId          String?
+  loginId          String?       @unique
   city             String?
   otp              String?
   countryCode      String        @default("91")
@@ -51,6 +51,7 @@ model Hostel {
   updatedAt   DateTime      @updatedAt
   rooms       Room[]
   Transaction Transaction[]
+  hostelRent  Int?
 }
 
 model Room {

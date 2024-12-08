@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { authenticator } from "../middleware/authenticator";
-import { getStudentDetails } from "../controllers/student.controller";
+import {
+  assignNewStudent,
+  getStudentDetails,
+  removeStudent,
+} from "../controllers/student.controller";
 
 const studentRoutes = Router();
 
@@ -9,5 +13,14 @@ studentRoutes.get(
   authenticator({ isAdmin: true }),
   getStudentDetails
 );
-
+studentRoutes.post(
+  "/assign-student",
+  authenticator({ isAdmin: true }),
+  assignNewStudent
+);
+studentRoutes.delete(
+  "/remove-student/:bedId",
+  authenticator({ isAdmin: true }),
+  removeStudent
+);
 export default studentRoutes;

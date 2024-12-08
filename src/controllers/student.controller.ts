@@ -32,3 +32,75 @@ export const getStudentDetails = async (req: Request, res: Response) => {
     res.status(500).json({ error: true, msg: "Something went wrong!" });
   }
 };
+
+export const assignNewStudent = async (req: Request, res: Response) => {
+  try {
+    const { name, mobile, bedId, studentId } = req.body;
+
+    const bedData = await prisma.bed.findFirst({ where: { id: bedId } });
+
+    if (bedData?.studentId) {
+      res.status(409).json({
+        error: true,
+        msg: "Already a student is assgined to the bed.",
+      });
+      return;
+    }
+
+    let studentData = await prisma.user.findFirst({
+      where: { OR: [{ mobile }, { id: studentId }] },
+    });
+
+    if (!studentData) {
+      studentData = await prisma.user.create({
+        data: {
+          mobile,
+          name,
+          role: "STUDENT",
+        },
+      });
+    }
+
+    const updateBed = await prisma.bed.update({
+      where: {
+        id: bedId,
+      },
+      data: {
+        studentId: studentData.id,
+      },
+      include: {
+        student: true,
+      },
+    });
+
+    res.status(200).json({
+      error: false,
+      msg: "Successfully assigned a bed.",
+      data: updateBed,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: true, msg: "Something went wrong!" });
+  }
+};
+
+export const removeStudent = async (req: Request, res: Response) => {
+  try {
+    const { bedId } = req.params;
+    const bedData = await prisma.bed.update({
+      where: { id: bedId },
+      data: {
+        studentId: null,
+      },
+    });
+
+    res.status(200).json({
+      error: false,
+      msg: "Student removed successfully.",
+      data: bedData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: true, msg: "Something went wrong!" });
+  }
+};
