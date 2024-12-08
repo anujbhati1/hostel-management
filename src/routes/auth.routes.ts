@@ -19,7 +19,7 @@ const authRoutes = Router();
  *               mobile:
  *                 type: string
  *                 description: Mobile number of the user.
- *                 example: "1234567890"
+ *                 example: "1234567892"
  *               password:
  *                 type: string
  *                 description: Password of the user.

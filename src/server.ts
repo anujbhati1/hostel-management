@@ -9,6 +9,7 @@ import swaggerDocs from "./swaggerConfig";
 import hostelRoutes from "./routes/hostel.routes";
 import roomRoutes from "./routes/room.routes";
 import bedRoutes from "./routes/bed.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 const PORT = Number(process.env.PORT) || 4000;
 const app = express();
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/hostels", hostelRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/beds", bedRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 //DB Connection
 export const prisma = new PrismaClient();

@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createHostel, getAllHostel } from "../controllers/hostel.controller";
+import {
+  createHostel,
+  getAllHostel,
+  getHostelDetailsById,
+} from "../controllers/hostel.controller";
 import { authenticator } from "../middleware/authenticator";
 
 const hostelRoutes = Router();
@@ -168,5 +172,130 @@ hostelRoutes.get("/", getAllHostel);
  *       bearerFormat: JWT
  */
 hostelRoutes.post("/", authenticator({ isAdmin: true }), createHostel);
+
+/**
+ * @swagger
+ * /api/hostels/{hostelId}:
+ *   get:
+ *     summary: Get details of a specific hostel
+ *     description: Retrieve all details of a specific hostel, including its rooms, beds, and the students assigned to the beds.
+ *     tags:
+ *       - Hostels
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: hostelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the hostel to fetch details for.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved hostel details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: boolean
+ *                   example: false
+ *                 msg:
+ *                   type: string
+ *                   example: Success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "hostel-id-123"
+ *                       name:
+ *                         type: string
+ *                         example: "Sunrise Hostel"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2023-12-06T10:00:00.000Z"
+ *                       rooms:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: string
+ *                               example: "room-id-456"
+ *                             createdAt:
+ *                               type: string
+ *                               format: date-time
+ *                               example: "2023-12-06T10:00:00.000Z"
+ *                             beds:
+ *                               type: array
+ *                               items:
+ *                                 type: object
+ *                                 properties:
+ *                                   id:
+ *                                     type: string
+ *                                     example: "bed-id-789"
+ *                                   rent:
+ *                                     type: number
+ *                                     example: 5000
+ *                                   createdAt:
+ *                                     type: string
+ *                                     format: date-time
+ *                                     example: "2023-12-06T10:00:00.000Z"
+ *                                   student:
+ *                                     type: object
+ *                                     nullable: true
+ *                                     properties:
+ *                                       id:
+ *                                         type: string
+ *                                         example: "student-id-101"
+ *                                       name:
+ *                                         type: string
+ *                                         example: "John Doe"
+ *                                       age:
+ *                                         type: number
+ *                                         example: 21
+ *       400:
+ *         description: Invalid hostel ID or other client-side error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: boolean
+ *                   example: true
+ *                 msg:
+ *                   type: string
+ *                   example: Invalid hostel ID
+ *       500:
+ *         description: Server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: boolean
+ *                   example: true
+ *                 msg:
+ *                   type: string
+ *                   example: Something went wrong!
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+hostelRoutes.get(
+  "/:hostelId",
+  authenticator({ isAdmin: true }),
+  getHostelDetailsById
+);
 
 export default hostelRoutes;

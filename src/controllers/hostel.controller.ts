@@ -37,3 +37,37 @@ export const getAllHostel = async (req: Request, res: Response) => {
     res.status(500).json({ error: true, msg: "Something went wrong!" });
   }
 };
+
+export const getHostelDetailsById = async (req: Request, res: Response) => {
+  try {
+    const { hostelId } = req.params;
+    const hostels = await prisma.hostel.findMany({
+      where: {
+        id: hostelId,
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+      include: {
+        rooms: {
+          include: {
+            beds: {
+              include: {
+                student: true,
+              },
+              orderBy: {
+                createdAt: "asc",
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+      },
+    });
+    res.status(200).json({ error: false, msg: "Success", data: hostels });
+  } catch (error) {
+    res.status(500).json({ error: true, msg: "Something went wrong!" });
+  }
+};
