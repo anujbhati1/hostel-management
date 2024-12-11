@@ -157,3 +157,64 @@
  *       scheme: bearer
  *       bearerFormat: JWT
  */
+
+/**
+ * @swagger
+ * /api/beds/{bedId}:
+ *   get:
+ *     summary: Get Bed Details by ID
+ *     description: Retrieve details of a specific bed by its ID, including the associated student information.
+ *     tags:
+ *       - Beds
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - name: bedId
+ *         in: path
+ *         description: The ID of the bed to retrieve.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved bed details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: boolean
+ *                   example: false
+ *                 msg:
+ *                   type: string
+ *                   example: Success
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "12345"
+ *                     student:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           example: "67890"
+ *                         name:
+ *                           type: string
+ *                           example: "John Doe"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: boolean
+ *                   example: true
+ *                 msg:
+ *                   type: string
+ *                   example: Something went wrong!
+ */

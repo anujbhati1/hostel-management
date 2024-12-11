@@ -39,3 +39,20 @@ export const getAllBed = async (req: Request, res: Response) => {
     res.status(500).json({ error: true, msg: "Something went wrong!" });
   }
 };
+
+export const getBedDetailsById = async (req: Request, res: Response) => {
+  try {
+    const { bedId } = req.params;
+    const bedDetails = await prisma.bed.findUnique({
+      where: {
+        id: bedId,
+      },
+      include: {
+        student: true,
+      },
+    });
+    res.status(200).json({ error: false, msg: "Success", data: bedDetails });
+  } catch (error) {
+    res.status(500).json({ error: true, msg: "Something went wrong!" });
+  }
+};
